@@ -31,7 +31,65 @@ class LinkList
     void show();
     int size(){return _size;}
     bool empty(){return _size == 0;}
+    bool insert(T value, int i);
+    bool remove(int i);
 };
+
+template<typename T>
+bool LinkList<T>::remove(int i)
+{
+    if (i < 0 || i > _size-1)
+    {
+        return false;
+    }
+    LinkNode<T> *tmp = nullptr;
+    if (i == 0)
+    {
+        tmp = head;
+        head = head->next;
+        delete tmp;
+        _size--;
+        return true;
+    }
+
+    LinkNode<T> *node = head;
+    for (int j = 0; j < i-1; ++j)
+    {
+        node = node->next;
+    }
+    tmp = node->next;
+    node->next = tmp->next;
+    delete tmp;
+    _size--;
+
+    return true;
+}
+
+template<typename T>
+bool LinkList<T>::insert(T value, int i)
+{
+    if (i < 0 || i > _size)
+    {
+        return false;
+    }
+    LinkNode<T> *insert_node = new LinkNode<T>(value);
+    if (i == 0)
+    {
+        insert_node->next = head;
+        head = insert_node;
+        _size++;
+        return true;
+    }
+    LinkNode<T> *node = head;
+    for (int j = 0; j < i-1; ++j)
+    {
+        node = node->next;
+    }
+    insert_node->next = node->next;
+    node->next = insert_node;
+    _size++;
+    return true;
+}
 
 template<typename T>
 LinkList<T>::~LinkList()
@@ -61,7 +119,7 @@ template<typename T>
 LinkList<T>& LinkList<T>::append(T value)
 {
     LinkNode<T> *pnode = new LinkNode<T>(value);
-  
+
     if (head == nullptr)
     {
         head = pnode;
@@ -83,9 +141,20 @@ LinkList<T>& LinkList<T>::append(T value)
 int main()
 {
     LinkList<int> ll;
+
     ll.append(1).append(2).append(3).append(4);
     if (!ll.empty())
         ll.show();
+
+    ll.insert(10, 3);
+    ll.insert(20, 1);
+    ll.insert(30, 0);
+    ll.insert(40, 7);
+    ll.show();
+
+    ll.remove(7);
+    ll.remove(0);
+    ll.show();
 
     return 0;
 }
